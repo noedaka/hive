@@ -1,0 +1,271 @@
+:root {
+    --content-width: 1140px;
+    --primary-color: #FFC100;
+    --secondary-color: #F5E675;
+    --border-radius: 20px;
+}
+
+* {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+   font-family: 'Inter'; 
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+}
+
+header {
+    background: var(--primary-color);
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.header-container {
+    width: var(--content-width);
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.header-name {
+    height: 63px;
+    width: 195px;
+    font-size: 36px;
+    font-family: 'Titillium Web';
+    font-weight: 600;
+}
+
+.header-nav {
+    display: flex;
+    padding: 5px;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.header-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: var(--secondary-color);
+    font-size: 24px;
+    border-radius: var(--border-radius);
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+}
+
+.post {
+    max-width: 652px;
+    max-height: auto;
+    padding: 20px;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--secondary-color);
+    border-radius: var(--border-radius);
+    gap: 10px;
+}
+
+.post-author {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.post-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.post-text {
+    font-size: 24px;
+    line-height: 1.6;
+}
+
+.post-img {
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.post-footer {
+    padding: 15px, 20px;
+    display: flex;
+    align-items: center;
+}
+
+.post-like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+}
+
+.post-like-button::before {
+    content: "❤️";
+    font-size: 1.2rem;
+}
+
+
+.auth-container {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    max-width: 529px;
+    max-height: 660px;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid black;
+    margin: auto 0;
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 48px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 24px;
+}
+
+.form-input {
+    border: none;
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    font-size: 24px;    
+}
+
+.auth-button {
+    border: none;
+    background-color: var(--secondary-color);
+    padding: 5px;
+    font-size: 24px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.auth-button:active {
+    background-color: var(--primary-color);
+}
+
+.auth-link {
+    color: var(--primary-color);
+}
+
+.proposal {
+    margin-top: 40px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.full-post {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.form-button {
+    margin-left: auto;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-color);
+    border: none;
+}
+
+.form-button:active {
+    background-color: var(--primary-color);
+}
+
+.comment-form-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.form-textarea {
+    border: none;
+    background: var(--secondary-color);
+}
+
+.form-textarea {
+    font-size: 20px;
+    resize: none;
+    border-radius: var(--border-radius);
+    padding: 15px;
+}
+
+
+.comment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment {
+    border: 1px, solid, rgb(176, 175, 175);
+    border-radius: var(--border-radius);
+    font-size: 20px;
+}
+
+.comment-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--secondary-color);
+    padding: 10px;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+.comment-content {
+    padding: 10px;
+}
+
+.create-post-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
