@@ -1,9 +1,9 @@
 import { useParams } from "react-router"
-import Layout from "../components/Layout"
+import Layout from "../components/layout/Layout"
 import type { Post, Comment } from "../types"
-import DetailedPost from "../components/DetailedPost"
-import CommentItem from "../components/CommentItem"
-import CommentForm from "../components/CommentForm"
+import DetailedPost from "../components/post/DetailedPost"
+import CommentItem from "../components/comment/CommentItem"
+import CommentForm from "../components/comment/CommentForm"
 
 export default function PostScreen() {
     const { postId } = useParams()

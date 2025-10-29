@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router"
-import Layout from "../components/Layout"
-import FormInput from "../components/FormInput"
+import Layout from "../components/layout/Layout"
+import FormInput from "../components/ui/FormInput"
 
 export default function SignInScreen() {
     const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
-import Layout from "../components/Layout";
-import PostCard from "../components/PostCard";
+import Layout from "../components/layout/Layout";
+import PostCard from "../components/post/PostCard";
 import type { Post } from "../types";
 
 export default function MainScreen() {

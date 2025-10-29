@@ -14,7 +14,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
     }
 
     return (
-        <div className="comment-form-section">=
+        <div className="comment-form-section">
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <textarea 

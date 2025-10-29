@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
-import Layout from "../components/Layout"
-import Button from "../components/Button"
+import Layout from "../components/layout/Layout"
+import Button from "../components/ui/Button"
 
 export default function CreatePostScreen() {
     const navigate = useNavigate()
