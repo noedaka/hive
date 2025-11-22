@@ -36,12 +36,12 @@ func (h *Handler) GetUserCredsByIDHandler(w http.ResponseWriter, r *http.Request
 
 	credsMap := map[string]model.UserCredentials{
 		"123": {
-			ID:       "123",
+			ID:       123,
 			Login:    "Thats123",
 			Password: "SomePass123",
 		},
 		"456": {
-			ID:       "456",
+			ID:       123,
 			Login:    "Thats456",
 			Password: "SomePass456",
 		},

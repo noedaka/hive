@@ -1,0 +1,9 @@
+CREATE TABLE comments (
+    id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    author_id INT NOT NULL,
+    post_id INT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
