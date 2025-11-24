@@ -3,7 +3,7 @@ CREATE TABLE posts (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     image_url VARCHAR(500) NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author_id INT NOT NULL,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );

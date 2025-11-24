@@ -41,7 +41,7 @@ func (repo *Repo) CreatePost(ctx context.Context, post model.Post) error {
 func (repo *Repo) GetPosts(ctx context.Context) ([]model.Post, error) {
 	rows, err := repo.db.QueryContext(ctx,
 		`SELECT id, title, content, image_url, created_at, author_id 
-        FROM orders 
+        FROM posts 
         ORDER BY created_at DESC`,
 	)
 	if err != nil {
@@ -59,6 +59,7 @@ func (repo *Repo) GetPosts(ctx context.Context) ([]model.Post, error) {
 		var uploadedAt time.Time
 
 		err = rows.Scan(
+			&post.ID,
 			&post.Title,
 			&post.Content,
 			&post.ImageURL,
@@ -84,7 +85,7 @@ func (repo *Repo) GetPosts(ctx context.Context) ([]model.Post, error) {
 func (repo *Repo) GetPost(ctx context.Context, postID int) (*model.Post, error) {
 	var post model.Post
 	err := repo.db.QueryRowContext(ctx,
-		"SELECT title, content, image_url, created_at, author_id FROM users WHERE id = $1", postID,
+		"SELECT title, content, image_url, created_at, author_id FROM posts WHERE id = $1 ", postID,
 	).Scan(&post.Title, &post.Content, &post.ImageURL, &post.CreatedAt, &post.AuthorID)
 	if err != nil {
 		return nil, err

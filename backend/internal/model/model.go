@@ -2,7 +2,7 @@ package model
 
 type UserCredentials struct {
 	ID       int    `json:"id"`
-	Login    string `json:"login" validate:"required,alphanum,min=3,max=50"`
+	Login    string `json:"login" validate:"required,min=3,max=50"`
 	Password string `json:"password" validate:"required,min=5,max=50"`
 }
 

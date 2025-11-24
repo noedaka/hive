@@ -66,7 +66,7 @@ func (repo *Repo) UnlikePost(ctx context.Context, userID, postID int) error {
 func (repo *Repo) CountPostLikes(ctx context.Context, postID int) (int, error) {
 	var likes int
 	err := repo.db.QueryRowContext(ctx,
-		"SELECT COUNT(*) FROM post_likes WHERE post_id = $1",
+		"SELECT COUNT(*) FROM post_likes WHERE post_id = $1", postID,
 	).Scan(&likes)
 
 	if err != nil {

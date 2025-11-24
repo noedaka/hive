@@ -37,9 +37,10 @@ func (repo *Repo) CreateUser(ctx context.Context, creds model.UserCredentials) (
 		return 0, err
 	}
 
-	_, err = tx.ExecContext(ctx,
-		"INSERT INTO users (id, login, password) VALUES ($1, $2, $3)",
-		creds.ID, creds.Login, hashedPassword)
+	var userID int
+	err = tx.QueryRowContext(ctx,
+		"INSERT INTO users (login, password_hash) VALUES ($1, $2) RETURNING id",
+		creds.Login, hashedPassword).Scan(&userID)
 	if err != nil {
 		return 0, err
 	}
@@ -48,14 +49,14 @@ func (repo *Repo) CreateUser(ctx context.Context, creds model.UserCredentials) (
 		return 0, err
 	}
 
-	return creds.ID, nil
+	return userID, nil
 }
 
 func (repo *Repo) GetUserIDByCreds(ctx context.Context, creds model.UserCredentials) (int, error) {
 	var userCredsFromDB model.UserCredentials
 	err := repo.db.QueryRowContext(ctx,
-		"SELECT id, oassword FROM user WHERE login = $1", creds.Login,
-	).Scan(&userCredsFromDB.ID, userCredsFromDB.Password)
+		"SELECT id, password_hash FROM users WHERE login = $1", creds.Login,
+	).Scan(&userCredsFromDB.ID, &userCredsFromDB.Password)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
