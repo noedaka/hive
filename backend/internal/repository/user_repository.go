@@ -10,10 +10,9 @@ import (
 )
 
 func (repo *Repo) CreateUser(ctx context.Context, creds model.UserCredentials) (int, error) {
-	userID := -1
 	tx, err := repo.db.BeginTx(ctx, nil)
 	if err != nil {
-		return userID, err
+		return 0, err
 	}
 
 	defer func() {
@@ -26,36 +25,33 @@ func (repo *Repo) CreateUser(ctx context.Context, creds model.UserCredentials) (
 
 	isFree, err := repo.isLoginFree(ctx, creds.Login)
 	if err != nil {
-		return userID, err
+		return 0, err
 	}
 
 	if !isFree {
-		return userID, nil
+		return 0, model.ErrOccupiedLogin
 	}
 
 	hashedPassword, err := auth.HashPassword(creds.Password)
 	if err != nil {
-		return userID, err
+		return 0, err
 	}
 
 	_, err = tx.ExecContext(ctx,
 		"INSERT INTO users (id, login, password) VALUES ($1, $2, $3)",
 		creds.ID, creds.Login, hashedPassword)
 	if err != nil {
-		return userID, err
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return userID, err
+		return 0, err
 	}
 
-	userID = creds.ID
-
-	return userID, nil
+	return creds.ID, nil
 }
 
 func (repo *Repo) GetUserIDByCreds(ctx context.Context, creds model.UserCredentials) (int, error) {
-	userID := -1
 	var userCredsFromDB model.UserCredentials
 	err := repo.db.QueryRowContext(ctx,
 		"SELECT id, oassword FROM user WHERE login = $1", creds.Login,
@@ -63,10 +59,10 @@ func (repo *Repo) GetUserIDByCreds(ctx context.Context, creds model.UserCredenti
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return userID, nil
+			return 0, model.ErrNoUser
 		}
 
-		return userID, err
+		return 0, err
 	}
 
 	isPasswordCorrect := auth.CheckPasswordHash(creds.Password, userCredsFromDB.Password)
@@ -74,7 +70,7 @@ func (repo *Repo) GetUserIDByCreds(ctx context.Context, creds model.UserCredenti
 		return userCredsFromDB.ID, nil
 	}
 
-	return userID, nil
+	return 0, nil
 }
 
 func (repo *Repo) isLoginFree(ctx context.Context, login string) (bool, error) {

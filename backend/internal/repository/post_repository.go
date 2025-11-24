@@ -45,6 +45,10 @@ func (repo *Repo) GetPosts(ctx context.Context) ([]model.Post, error) {
         ORDER BY created_at DESC`,
 	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, model.ErrNoPosts
+		}
+
 		return nil, err
 	}
 	defer rows.Close()

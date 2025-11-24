@@ -38,13 +38,17 @@ func (repo *Repo) CreateComment(ctx context.Context, comment model.Comment) erro
 	return nil
 }
 
-func (repo *Repo) GetComments(ctx context.Context, authorID int, postID int) ([]model.Comment, error) {
+func (repo *Repo) GetComments(ctx context.Context, postID int) ([]model.Comment, error) {
 	rows, err := repo.db.QueryContext(ctx,
 		`SELECT id, content, created_at, author_id 
         FROM comments 
         ORDER BY created_at DESC`,
 	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, model.ErrNoComments
+		}
+
 		return nil, err
 	}
 	defer rows.Close()
