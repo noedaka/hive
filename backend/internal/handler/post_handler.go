@@ -11,11 +11,33 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// CreatePostHandler обрабатывает запрос на создание нового поста.
+//
+// Метод: POST
+// Путь: /api/posts
+// Требует аутентификации: да
+//
+// Принимает в теле запроса JSON с данными поста:
+//
+//	{
+//	  "title": "string (1-200 символов)",
+//	  "content": "string (20-10000 символов)",
+//	  "image_url": "string (опционально)"
+//	}
+//
+// Поля "id", "created_at", "author_id" в запросе игнорируются.
+// AuthorID автоматически устанавливается из JWT токена пользователя.
+//
+// Ответы:
+//   - 201 Created: пост успешно создан (тело ответа пустое)
+//   - 400 Bad Request: неверный формат запроса или ID
+//   - 401 Unauthorized: пользователь не аутентифицирован
+//   - 500 Internal Server Error: внутренняя ошибка сервера
 func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(model.UserIDKey).(int)
 	if !ok {
 		log.Fatal(userID)
-		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
+		http.Error(w, "Authentication error", http.StatusUnauthorized)
 		return
 	}
 
@@ -36,6 +58,31 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetPostsHandler обрабатывает запрос на получение списка всех постов.
+//
+// Метод: GET
+// Путь: /api/posts
+// Требует аутентификации: да
+//
+// Ответы:
+//   - 200 OK: успешный запрос, возвращает массив постов в формате JSON
+//   - 204 No Content: посты не найдены
+//   - 500 Internal Server Error: внутренняя ошибка сервера
+//
+// Формат ответа (200 OK):
+//
+//	  [
+//	    {
+//	      "id": 1,
+//	      "title": "string",
+//	      "content": "string",
+//	      "image_url": "string",
+//	      "created_at": "string",
+//	      "author_id": 1
+//		  "likes_count": 0
+//		  "comments":
+//	    }
+//	  ]
 func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := h.postService.GetPosts(r.Context())
 	if err != nil {
@@ -57,6 +104,47 @@ func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetPostHandler обрабатывает запрос на получение конкретного поста по ID.
+//
+// Метод: GET
+// Путь: /api/posts/{id}
+// Требует аутентификации: да
+//
+// Параметры пути:
+//   - id: int - идентификатор поста
+//
+// Ответы:
+//   - 200 OK: пост найден, возвращает объект поста в формате JSON
+//   - 204 No Content: пост с указанным ID не найден
+//   - 400 Bad Request: неверный формат ID
+//   - 500 Internal Server Error: внутренняя ошибка сервера
+//
+// Формат ответа (200 OK):
+//
+//	{
+//	    "post": {
+//	        "ID": 1,
+//	        "title": "title",
+//	        "content": "THis is test content",
+//	        "image_url": "",
+//	        "created_at": "2025-11-30T15:22:31.654766Z",
+//	        "author_id": 1
+//	    },
+//	    "like_count": 0,
+//	    "comments": [
+//	        {
+//	            "comment": {
+//	                "ID": 1,
+//	                "content": "THis is test comment",
+//	                "created_at": "2025-11-30T15:23:31Z",
+//	                "author_id": 1,
+//	                "post_id": 1
+//	            },
+//	            "author_name": "user"
+//	        }
+//	        }
+//	    ]
+//	}
 func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -83,6 +171,23 @@ func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// LikePostHandler обрабатывает запрос на добавление лайка к посту.
+//
+// Метод: POST
+// Путь: /api/posts/{id}/like
+// Требует аутентификации: да
+//
+// Параметры пути:
+//   - id: int - идентификатор поста
+//
+// Ответы:
+//   - 200 OK: лайк успешно добавлен (тело ответа пустое)
+//   - 400 Bad Request: неверный формат ID
+//   - 401 Unauthorized: пользователь не аутентифицирован
+//   - 500 Internal Server Error: внутренняя ошибка сервера
+//
+// Примечание: пользователь может лайкнуть пост только один раз.
+// Повторные запросы от того же пользователя к тому же посту игнорируются.
 func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -92,7 +197,7 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value(model.UserIDKey).(int)
 	if !ok {
-		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
+		http.Error(w, "Authentication error", http.StatusUnauthorized)
 		return
 	}
 
@@ -105,6 +210,23 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// UnlikePostHandler обрабатывает запрос на удаление лайка с поста.
+//
+// Метод: DELETE
+// Путь: /api/posts/{id}/like
+// Требует аутентификации: да
+//
+// Параметры пути:
+//   - id: int - идентификатор поста
+//
+// Ответы:
+//   - 200 OK: лайк успешно удален (тело ответа пустое)
+//   - 400 Bad Request: неверный формат ID
+//   - 401 Unauthorized: пользователь не аутентифицирован
+//   - 500 Internal Server Error: внутренняя ошибка сервера
+//
+// Примечание: если лайк от данного пользователя не найден,
+// запрос все равно возвращает 200 OK.
 func (h *Handler) UnlikePostHandler(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -114,7 +236,7 @@ func (h *Handler) UnlikePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value(model.UserIDKey).(int)
 	if !ok {
-		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
+		http.Error(w, "Authentication error", http.StatusUnauthorized)
 		return
 	}
 

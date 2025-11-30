@@ -11,16 +11,6 @@ func (s *service) CreateComment(ctx context.Context, comment model.Comment) erro
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	_, err := s.userRepo.GetLoginByID(ctx, comment.AuthorID)
-	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
-	}
-
-	_, err = s.postRepo.GetPost(ctx, comment.PostID)
-	if err != nil {
-		return fmt.Errorf("post not found: %w", err)
-	}
-
 	return s.commentRepo.CreateComment(ctx, comment)
 }
 

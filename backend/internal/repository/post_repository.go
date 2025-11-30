@@ -85,8 +85,8 @@ func (repo *Repo) GetPosts(ctx context.Context) ([]model.Post, error) {
 func (repo *Repo) GetPost(ctx context.Context, postID int) (*model.Post, error) {
 	var post model.Post
 	err := repo.db.QueryRowContext(ctx,
-		"SELECT title, content, image_url, created_at, author_id FROM posts WHERE id = $1 ", postID,
-	).Scan(&post.Title, &post.Content, &post.ImageURL, &post.CreatedAt, &post.AuthorID)
+		"SELECT id, title, content, image_url, created_at, author_id FROM posts WHERE id = $1 ", postID,
+	).Scan(&post.ID, &post.Title, &post.Content, &post.ImageURL, &post.CreatedAt, &post.AuthorID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, model.ErrNoPosts
@@ -94,8 +94,6 @@ func (repo *Repo) GetPost(ctx context.Context, postID int) (*model.Post, error) 
 
 		return nil, err
 	}
-
-	post.ID = postID
 
 	return &post, nil
 }

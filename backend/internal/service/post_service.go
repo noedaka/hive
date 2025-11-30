@@ -11,10 +11,6 @@ func (s *service) CreatePost(ctx context.Context, post model.Post) error {
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	if _, err := s.userRepo.GetLoginByID(ctx, post.AuthorID); err != nil {
-		return fmt.Errorf("user not found %w", err)
-	}
-
 	return s.postRepo.CreatePost(ctx, post)
 }
 
@@ -63,29 +59,9 @@ func (s *service) GetPost(ctx context.Context, postID int) (*model.PostDetailed,
 }
 
 func (s *service) LikePost(ctx context.Context, userID, postID int) error {
-	_, err := s.userRepo.GetLoginByID(ctx, userID)
-	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
-	}
-
-	_, err = s.postRepo.GetPost(ctx, postID)
-	if err != nil {
-		return fmt.Errorf("post not found: %w", err)
-	}
-
 	return s.likeRepo.LikePost(ctx, userID, postID)
 }
 
 func (s *service) UnlikePost(ctx context.Context, userID, postID int) error {
-	_, err := s.userRepo.GetLoginByID(ctx, userID)
-	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
-	}
-
-	_, err = s.postRepo.GetPost(ctx, postID)
-	if err != nil {
-		return fmt.Errorf("post not found: %w", err)
-	}
-
 	return s.likeRepo.UnlikePost(ctx, userID, postID)
 }

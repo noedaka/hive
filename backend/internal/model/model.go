@@ -1,7 +1,7 @@
 package model
 
 type UserCredentials struct {
-	ID       int    `json:"id"`
+	ID       int
 	Login    string `json:"login" validate:"required,min=3,max=50"`
 	Password string `json:"password" validate:"required,min=5,max=50"`
 }
@@ -11,7 +11,7 @@ type PostID struct {
 }
 
 type Post struct {
-	ID        int    `json:"id"`
+	ID        int
 	Title     string `json:"title" validate:"required,min=1,max=200"`
 	Content   string `json:"content" validate:"required,min=20,max=10000"`
 	ImageURL  string `json:"image_url" validate:"omitempty"`
@@ -20,7 +20,7 @@ type Post struct {
 }
 
 type Comment struct {
-	ID        int    `json:"id"`
+	ID        int
 	Content   string `json:"content" validate:"required,min=1,max=1000"`
 	CreatedAt string `json:"created_at"`
 	AuthorID  int    `json:"author_id" validate:"required,gt=0"`
