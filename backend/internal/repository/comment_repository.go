@@ -40,13 +40,13 @@ func (repo *Repo) CreateComment(ctx context.Context, comment model.Comment) erro
 
 func (repo *Repo) GetComments(ctx context.Context, postID int) ([]model.Comment, error) {
 	rows, err := repo.db.QueryContext(ctx,
-		`SELECT id, content, created_at, author_id 
-        FROM comments WHERE id = $1
+		`SELECT id, content, created_at, author_id
+        FROM comments WHERE post_id = $1
         ORDER BY created_at DESC`, postID,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, model.ErrNoComments
+			return nil, nil
 		}
 
 		return nil, err
@@ -57,6 +57,8 @@ func (repo *Repo) GetComments(ctx context.Context, postID int) ([]model.Comment,
 	for rows.Next() {
 		var comment model.Comment
 		var uploadedAt time.Time
+
+		comment.PostID = postID
 
 		err = rows.Scan(
 			&comment.ID,
@@ -70,6 +72,7 @@ func (repo *Repo) GetComments(ctx context.Context, postID int) ([]model.Comment,
 		}
 
 		comment.CreatedAt = uploadedAt.Format(time.RFC3339)
+
 		comments = append(comments, comment)
 	}
 

@@ -70,8 +70,11 @@ func (repo *Repo) CountPostLikes(ctx context.Context, postID int) (int, error) {
 	).Scan(&likes)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, nil
+		}
+
 		return 0, err
 	}
-
 	return likes, nil
 }

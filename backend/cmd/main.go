@@ -3,6 +3,8 @@ package main
 import (
 	"hive-backend/internal/app"
 	"log"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {

@@ -71,7 +71,7 @@ func (repo *Repo) GetUserIDByCreds(ctx context.Context, creds model.UserCredenti
 		return userCredsFromDB.ID, nil
 	}
 
-	return 0, nil
+	return 0, model.ErrIncorrectPass
 }
 
 func (repo *Repo) isLoginFree(ctx context.Context, login string) (bool, error) {
@@ -93,7 +93,7 @@ func (repo *Repo) isLoginFree(ctx context.Context, login string) (bool, error) {
 func (repo *Repo) GetLoginByID(ctx context.Context, authorID int) (string, error) {
 	var login string
 	err := repo.db.QueryRowContext(ctx,
-		"SELECT login FROM users WHERE id = &1", authorID,
+		"SELECT login FROM users WHERE id = $1", authorID,
 	).Scan(&login)
 
 	if err != nil {

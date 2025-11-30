@@ -88,8 +88,14 @@ func (repo *Repo) GetPost(ctx context.Context, postID int) (*model.Post, error) 
 		"SELECT title, content, image_url, created_at, author_id FROM posts WHERE id = $1 ", postID,
 	).Scan(&post.Title, &post.Content, &post.ImageURL, &post.CreatedAt, &post.AuthorID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, model.ErrNoPosts
+		}
+
 		return nil, err
 	}
+
+	post.ID = postID
 
 	return &post, nil
 }

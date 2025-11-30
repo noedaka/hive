@@ -6,6 +6,10 @@ type UserCredentials struct {
 	Password string `json:"password" validate:"required,min=5,max=50"`
 }
 
+type PostID struct {
+	PostID int `json:"post_id"`
+}
+
 type Post struct {
 	ID        int    `json:"id"`
 	Title     string `json:"title" validate:"required,min=1,max=200"`
