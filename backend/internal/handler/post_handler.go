@@ -72,7 +72,7 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 // Формат ответа (200 OK):
 //
 //	  [
-//	    {
+//	    post: {
 //	      "id": 1,
 //	      "title": "string",
 //	      "content": "string",
@@ -80,7 +80,6 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 //	      "created_at": "string",
 //	      "author_id": 1
 //		  "likes_count": 0
-//		  "comments":
 //	    }
 //	  ]
 func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -163,7 +162,7 @@ func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case model.ErrNoPosts:
-		http.Error(w, "No post on this ID", http.StatusNoContent)
+		http.Error(w, "No post on this ID", http.StatusNotFound)
 		return
 	default:
 		http.Error(w, "Internal server Error", http.StatusInternalServerError)

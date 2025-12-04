@@ -22,23 +22,23 @@ func Run() error {
 	defer db.Close()
 
 	repo := repository.NewRepo(db)
-	svc := service.NewService(repo, repo, repo, repo)
-	hnd := handler.NewHandler(svc, svc, svc)
+	service := service.NewService(repo, repo, repo, repo)
+	handler := handler.NewHandler(service, service, service)
 
 	router.Route("/", func(r chi.Router) {
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/auth", func(r chi.Router) {
-				r.Post("/register", hnd.RegisterHandler)
-				r.Post("/login", hnd.LoginHandler)
+				r.Post("/register", handler.RegisterHandler)
+				r.Post("/login", handler.LoginHandler)
 			})
 			r.Route("/posts", func(r chi.Router) {
 				r.Use(middleware.AuthMiddleware)
-				r.Post("/", hnd.CreatePostHandler)
-				r.Get("/", hnd.GetPostsHandler)
-				r.Get("/{id}", hnd.GetPostHandler)
-				r.Post("/{id}/comment", hnd.CreateCommentHandler)
-				r.Post("/{id}/like", hnd.LikePostHandler)
-				r.Delete("/{id}/like", hnd.UnlikePostHandler)
+				r.Post("/", handler.CreatePostHandler)
+				r.Get("/", handler.GetPostsHandler)
+				r.Get("/{id}", handler.GetPostHandler)
+				r.Post("/{id}/comment", handler.CreateCommentHandler)
+				r.Post("/{id}/like", handler.LikePostHandler)
+				r.Delete("/{id}/like", handler.UnlikePostHandler)
 			})
 		})
 	})
