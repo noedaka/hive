@@ -62,7 +62,6 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 //
 // Метод: GET
 // Путь: /api/posts
-// Требует аутентификации: да
 //
 // Ответы:
 //   - 200 OK: успешный запрос, возвращает массив постов в формате JSON
@@ -79,8 +78,11 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 //	      "image_url": "string",
 //	      "created_at": "string",
 //	      "author_id": 1
-//		  "likes_count": 0
-//	    }
+//
+//	    },
+//		"author_name": "string",
+//		"likes_count": 0,
+//
 //	  ]
 func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := h.postService.GetPosts(r.Context())
@@ -103,72 +105,72 @@ func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GetPostHandler обрабатывает запрос на получение конкретного поста по ID.
-//
-// Метод: GET
-// Путь: /api/posts/{id}
-// Требует аутентификации: да
-//
-// Параметры пути:
-//   - id: int - идентификатор поста
-//
-// Ответы:
-//   - 200 OK: пост найден, возвращает объект поста в формате JSON
-//   - 204 No Content: пост с указанным ID не найден
-//   - 400 Bad Request: неверный формат ID
-//   - 500 Internal Server Error: внутренняя ошибка сервера
-//
-// Формат ответа (200 OK):
-//
-//	{
-//	    "post": {
-//	        "ID": 1,
-//	        "title": "title",
-//	        "content": "THis is test content",
-//	        "image_url": "",
-//	        "created_at": "2025-11-30T15:22:31.654766Z",
-//	        "author_id": 1
-//	    },
-//	    "like_count": 0,
-//	    "comments": [
-//	        {
-//	            "comment": {
-//	                "ID": 1,
-//	                "content": "THis is test comment",
-//	                "created_at": "2025-11-30T15:23:31Z",
-//	                "author_id": 1,
-//	                "post_id": 1
-//	            },
-//	            "author_name": "user"
-//	        }
-//	        }
-//	    ]
-//	}
-func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
-	postID, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if err != nil {
-		http.Error(w, "Invalid ID format", http.StatusBadRequest)
-		return
-	}
-
-	post, err := h.postService.GetPost(r.Context(), postID)
-	switch err {
-	case nil:
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		if err := json.NewEncoder(w).Encode(post); err != nil {
-			http.Error(w, "error encoding response", http.StatusInternalServerError)
+	// GetPostHandler обрабатывает запрос на получение конкретного поста по ID.
+	//
+	// Метод: GET
+	// Путь: /api/posts/{id}
+	//
+	// Параметры пути:
+	//   - id: int - идентификатор поста
+	//
+	// Ответы:
+	//   - 200 OK: пост найден, возвращает объект поста в формате JSON
+	//   - 204 No Content: пост с указанным ID не найден
+	//   - 400 Bad Request: неверный формат ID
+	//   - 500 Internal Server Error: внутренняя ошибка сервера
+	//
+	// Формат ответа (200 OK):
+	//
+	//	{
+	//	    "post": {
+	//	        "ID": 1,
+	//	        "title": "title",
+	//	        "content": "THis is test content",
+	//	        "image_url": "",
+	//	        "created_at": "2025-11-30T15:22:31.654766Z",
+	//	        "author_id": 1
+	//	    },
+	//		"author_name": "string",
+	//	    "like_count": 0,
+	//	    "comments": [
+	//	        {
+	//	            "comment": {
+	//	                "ID": 1,
+	//	                "content": "THis is test comment",
+	//	                "created_at": "2025-11-30T15:23:31Z",
+	//	                "author_id": 1,
+	//	                "post_id": 1
+	//	            },
+	//	            "author_name": "user"
+	//	        }
+	//	        }
+	//	    ]
+	//	}
+	func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
+		postID, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			http.Error(w, "Invalid ID format", http.StatusBadRequest)
 			return
 		}
-	case model.ErrNoPosts:
-		http.Error(w, "No post on this ID", http.StatusNotFound)
-		return
-	default:
-		http.Error(w, "Internal server Error", http.StatusInternalServerError)
-		return
+
+		post, err := h.postService.GetPost(r.Context(), postID)
+		switch err {
+		case nil:
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+			if err := json.NewEncoder(w).Encode(post); err != nil {
+				http.Error(w, "error encoding response", http.StatusInternalServerError)
+				return
+			}
+		case model.ErrNoPosts:
+			http.Error(w, "No post on this ID", http.StatusNotFound)
+			return
+		default:
+			http.Error(w, "Internal server Error", http.StatusInternalServerError)
+			return
+		}
 	}
-}
 
 // LikePostHandler обрабатывает запрос на добавление лайка к посту.
 //

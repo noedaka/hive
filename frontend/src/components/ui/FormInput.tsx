@@ -7,6 +7,8 @@ export interface FormInputProps {
     required?: boolean
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     label?: string
+    error?: string  
+    disabled?: boolean 
 }
 
 export default function FormInput({
@@ -17,7 +19,9 @@ export default function FormInput({
     placeholder,
     required = false,
     onChange,
-    label
+    label,
+    error, 
+    disabled = false  
 }: FormInputProps) {
     return (
         <div className="form-group">
@@ -28,12 +32,18 @@ export default function FormInput({
                 type={type}
                 id={id}
                 name={name}
-                className="form-input"
+                className={`form-input ${error ? 'form-input-error' : ''}`}  
                 required={required}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                disabled={disabled} 
             />
+            {error && (
+                <div className="form-error">
+                    {error}
+                </div>
+            )}
         </div>
     )
 }

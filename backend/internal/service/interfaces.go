@@ -7,7 +7,7 @@ import (
 
 type PostService interface {
 	CreatePost(ctx context.Context, post model.Post) error
-	GetPosts(ctx context.Context) ([]model.PostWithLikes, error)
+	GetPosts(ctx context.Context) ([]model.PostWithLikesAndName, error)
 	GetPost(ctx context.Context, postID int) (*model.PostDetailed, error)
 
 	LikePost(ctx context.Context, userID, postID int) error

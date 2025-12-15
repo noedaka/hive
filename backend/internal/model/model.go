@@ -32,13 +32,15 @@ type CommentWithAuthor struct {
 	AuthorLogin string `json:"author_name"`
 }
 
-type PostWithLikes struct {
-	Post      Post `json:"post"`
-	LikeCount int  `json:"like_count"`
+type PostWithLikesAndName struct {
+	Post        Post   `json:"post"`
+	AuthorLogin string `json:"author_name"`
+	LikeCount   int    `json:"like_count"`
 }
 
 type PostDetailed struct {
-	Post      Post                `json:"post"`
-	LikeCount int                 `json:"like_count"`
-	Comments  []CommentWithAuthor `json:"comments"`
+	Post        Post                `json:"post"`
+	AuthorLogin string              `json:"author_name"`
+	LikeCount   int                 `json:"like_count"`
+	Comments    []CommentWithAuthor `json:"comments"`
 }

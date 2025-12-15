@@ -4,6 +4,7 @@ import MainScreen from './screens/MainScreen'
 import CreatePostScreen from './screens/CreatePostScreen'
 import PostScreen from './screens/PostScreen'
 import SignInScreen from './screens/SignInScreen'
+import SignUpScreen from './screens/SignUpScreen'
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
           <Route path=":postId" element={<PostScreen />} />
         </Route>
         <Route path="auth">
-          <Route path="signIn" element={<SignInScreen />} />
+          <Route path="signin" element={<SignInScreen />} />
+          <Route path="signup" element={<SignUpScreen />} />
         </Route>
       </Routes>
     </BrowserRouter>

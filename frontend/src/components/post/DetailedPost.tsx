@@ -1,31 +1,63 @@
-import type { Post } from "../../types"
+import { Link } from "react-router";
+import type { Post } from "../../types";
+import { useLike } from "../../hooks/useLikes";
 
-export interface DetailedPostProps {
-    post: Post
+export interface PostCardProps {
+  post: Post;
+  onClick?: () => void;
 }
 
-export default function DetailedPost({ post }: DetailedPostProps) {
-    return (
-        <div className="post detailed">
-            <div className="post-header">
-                <div className="post-author">{post.author.userName}</div>
-                <div className="post-date">October 12, 2025 at 12:00</div>
-            </div>
-            <div className="post-content">
-                <p className="post-text">{post.text}</p>
-                {post.postImg && (
-                    <img 
-                        src={post.postImg} 
-                        alt="post img" 
-                        className="post-img"
-                    />
-                )}
-            </div>
-            <div className="post-footer">
-                <button className="post-like-button">
-                    <span className="post-likes-count">{post.likes}</span>
-                </button>
-            </div>
-        </div>
-    )
+export default function PostCard({ post, onClick }: PostCardProps) {
+  const { likes, isLiked, isLoading, toggleLike } = useLike(post.id, post.likes);
+
+  function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    if (onClick) {
+      onClick();
+    }
+  }
+
+  function handleLikeClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleLike();
+  }
+
+  return (
+    <div className="post">
+      <div className="post-header">
+        <div className="post-author">{post.author.userName}</div>
+        {post.created_at && (
+          <div className="post-date">
+            {new Date(post.created_at).toLocaleDateString()}
+          </div>
+        )}
+      </div>
+      {post.title && (
+        <h3 className="post-title">{post.title}</h3>
+      )}
+      <Link to={`/posts/${post.id}`} className="post-content" onClick={handleClick}>
+        <p className="post-text">{post.text}</p>
+        {post.postImg && (
+          <div className="post-img">
+            <img 
+              src={post.postImg} 
+              alt="post" 
+              className="post-image"
+            />
+          </div>
+        )}
+      </Link>
+      <div className="post-footer">
+        <button 
+          className={`post-like-button ${isLiked ? 'post-like-button--active' : ''}`}
+          onClick={handleLikeClick}
+          disabled={isLoading}
+          aria-label={isLiked ? "Unlike this post" : "Like this post"}
+        >
+          <span className="post-likes-count">{likes}</span>
+        </button>
+      </div>
+    </div>
+  );
 }

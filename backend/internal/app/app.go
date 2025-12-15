@@ -26,6 +26,10 @@ func Run() error {
 	handler := handler.NewHandler(service, service, service)
 
 	router.Route("/", func(r chi.Router) {
+		r.Use(middleware.EnableCORS)
+		fs := http.FileServer(http.Dir("./uploads"))
+		router.Handle("/uploads/*", http.StripPrefix("/uploads/", fs))
+
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/auth", func(r chi.Router) {
 				r.Post("/register", handler.RegisterHandler)
@@ -39,6 +43,7 @@ func Run() error {
 				r.Post("/{id}/comment", handler.CreateCommentHandler)
 				r.Post("/{id}/like", handler.LikePostHandler)
 				r.Delete("/{id}/like", handler.UnlikePostHandler)
+				r.Post("/upload", handler.UploadImageHandler)
 			})
 		})
 	})
